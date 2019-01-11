@@ -1,19 +1,17 @@
 # Bandwidth Monitoring Daemon
 
-## Prerequisites
+## Requirements
 
-Requires:
-
-  * balena.io
-  * ubidots
+  * A SBC Supported by Golang and [balena.io](https://www.balena.io) (and obviously an account)
+  * An (industrial) account on [ubidots](https://ubidots.com/)
   
 ## Usage
 
   * Create an account on both balena and ubidots.
   * Create a bwm-d app on balena
-    * Under Application | Environment Varialbes, set your Ubidots Token
+    * Under `Environment Varialbes`, set your Ubidots Token
   * Clone it locally and push into your balena repo
-  * Download Raspberry Pi Images for your app and start playing around :)
+  * Create Devices and download their boot images. Burn, boot your pi and start playing around :)
 
 ## Shortcomings
 
