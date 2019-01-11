@@ -27,16 +27,34 @@ type ValueHolder struct {
 	Value float64 `json:"value"`
 }
 
-func (b *BandwidthMeasurement) Publish() error {
-	deviceName := "DEV"
-	apiToken := os.Getenv("UBIDOTS_API_TOKEN")
+type Publisher struct {
+	apiToken   string
+	deviceName string
+}
 
-	if newDeviceName := os.Getenv("BALENA_DEVICE_NAME_AT_INIT"); "" != newDeviceName {
-		deviceName = newDeviceName
+func EnvIf(varName string, defaultValue string) string {
+	result := defaultValue
+
+	if newResult := os.Getenv(varName); "" != newResult {
+		result = newResult
 	}
 
+	return result
+}
+
+func NewPublisher() (*Publisher, error) {
+	deviceName := EnvIf("BALENA_DEVICE_NAME_AT_INIT", "DEV")
+	apiToken := os.Getenv("UBIDOTS_API_TOKEN")
+
+	return &Publisher{
+		deviceName: apiToken,
+		apiToken:   apiToken,
+	}, nil
+}
+
+func (p *Publisher) Publish(b *BandwidthMeasurement) error {
 	resp, err := resty.R().
-		SetHeader("X-Auth-Token", apiToken).
+		SetHeader("X-Auth-Token", p.apiToken).
 		SetHeader("Content-Type", "application/json").
 		SetBody(struct {
 			Distance ValueHolder `json:"distance"`
@@ -48,16 +66,18 @@ func (b *BandwidthMeasurement) Publish() error {
 			Ping:     ValueHolder{Value: b.Ping},
 			Upload:   ValueHolder{Value: b.Upload},
 			Download: ValueHolder{Value: b.Download},
-		}).Post("https://industrial.api.ubidots.com/api/v1.6/devices/" + deviceName)
+		}).Post("https://industrial.api.ubidots.com/api/v1.6/devices/" + p.deviceName)
 
 	if nil == err {
 		log.Infof("resp: %+v", resp)
+	} else {
+		log.Warn("Oops: %s", err)
 	}
 
 	return err
 }
 
-func parseAndPublishLine(s string) error {
+func (p *Publisher) ParseAndPublishLine(s string) error {
 	elements := strings.SplitN(strings.Trim(s, "\r\n "), ",", 10)
 
 	atof := func(s string) float64 {
@@ -81,14 +101,26 @@ func parseAndPublishLine(s string) error {
 
 	log.Infof("rec: %+v", rec)
 
-	return rec.Publish()
+	return p.Publish(rec)
 }
 
 func BackgroundTask() {
-	serverId := "13536"
+	serverId := EnvIf("SERVER_ID", "13536")
 
-	if newServerId := os.Getenv("SERVER_ID"); "" != newServerId {
-		serverId = newServerId
+	publisher, err := NewPublisher()
+
+	if nil != err {
+		log.Warn("Oops: %s", err)
+
+		return
+	}
+
+	cliPath, err := exec.LookPath("speedtest-cli")
+
+	if nil != err {
+		log.Warn("Oops: %s", err)
+
+		return
 	}
 
 	for {
@@ -99,7 +131,7 @@ func BackgroundTask() {
 
 		log.Infof("Running")
 
-		cmdToRun := exec.Command("/usr/local/bin/speedtest-cli", "--csv", "--server", serverId)
+		cmdToRun := exec.Command(cliPath, "--csv", "--server", serverId)
 
 		outputBytes, err := cmdToRun.Output()
 
@@ -110,7 +142,7 @@ func BackgroundTask() {
 
 		commandOutput := string(outputBytes)
 
-		err = parseAndPublishLine(commandOutput)
+		err = publisher.ParseAndPublishLine(commandOutput)
 
 		if nil != err {
 			log.Warn("Oops: %s", err)
