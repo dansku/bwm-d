@@ -9,7 +9,7 @@
 
   * Create an account on both balena and ubidots.
   * Create a bwm-d app on balena
-    * Under `Environment Varialbes`, set your Ubidots Token
+    * Under `Environment Variables`, set your Ubidots Token
   * Clone it locally and push into your balena repo
   * Create Devices and download their boot images. Burn, boot your pi and start playing around :)
 
