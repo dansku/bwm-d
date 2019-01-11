@@ -47,7 +47,7 @@ func NewPublisher() (*Publisher, error) {
 	apiToken := os.Getenv("UBIDOTS_API_TOKEN")
 
 	return &Publisher{
-		deviceName: apiToken,
+		deviceName: deviceName,
 		apiToken:   apiToken,
 	}, nil
 }
