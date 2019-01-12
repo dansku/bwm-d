@@ -124,7 +124,7 @@ func BackgroundTask() {
 		return
 	}
 
-	reportingPeriod, _ := period.MustParse(EnvIf("REPORTING_PERIOD", "P60M")).Duration()
+	reportingPeriod, _ := period.MustParse(EnvIf("REPORTING_PERIOD", "PT1H")).Duration()
 
 	log.Infof("Using duration: %s", reportingPeriod.String())
 
