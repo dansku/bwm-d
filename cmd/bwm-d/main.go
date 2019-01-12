@@ -131,9 +131,6 @@ func BackgroundTask() {
 	for {
 		log.Infof("Using server id: %s", serverId)
 
-		log.Infof("Waiting a minute")
-		time.Sleep(1 * time.Minute)
-
 		log.Infof("Running")
 
 		cmdToRun := exec.Command(cliPath, "--csv", "--server", serverId)
