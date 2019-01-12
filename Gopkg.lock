@@ -8,6 +8,22 @@
   version = "v1.0.1"
 
 [[projects]]
+  name = "github.com/rickb777/date"
+  packages = [
+    ".",
+    "gregorian",
+    "period"
+  ]
+  revision = "75ffca56eb37e0f55737ff4509e0fea543d239da"
+  version = "v1.8.1"
+
+[[projects]]
+  name = "github.com/rickb777/plural"
+  packages = ["."]
+  revision = "7589705ae1b0a218b5389c04b1505e0c8defbc1f"
+  version = "v1.2.0"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "e1e72e9de974bd926e5c56f83753fba2df402ce5"
@@ -67,6 +83,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9d3fc3d3643b2e7400cc1fedbabc8c0411c5c69a9bb40c2604b6908ea7c22b5d"
+  inputs-digest = "d5a78c19c0e4d2539f382ccc9c59a38bb17f242df918aaa12acf2d41cb360750"
   solver-name = "gps-cdcl"
   solver-version = 1

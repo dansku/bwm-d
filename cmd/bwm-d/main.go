@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 )
+import "github.com/rickb777/date/period"
 
 type BandwidthMeasurement struct {
 	ServerID   string
@@ -123,6 +124,10 @@ func BackgroundTask() {
 		return
 	}
 
+	reportingPeriod, _ := period.MustParse(EnvIf("REPORTING_PERIOD", "P60M")).Duration()
+
+	log.Infof("Using duration: %s", reportingPeriod.String())
+
 	for {
 		log.Infof("Using server id: %s", serverId)
 
@@ -151,7 +156,7 @@ func BackgroundTask() {
 
 		log.Infof("Output: %s", commandOutput)
 
-		time.Sleep(1 * time.Hour)
+		time.Sleep(reportingPeriod)
 	}
 }
 
