@@ -4,7 +4,7 @@ COPY . /go/src/github.com/aldrinleal/bwm-d
 
 WORKDIR /go/src/github.com/aldrinleal/bwm-d
 
-RUN go get -u github.com/golang/dep/cmd/dep && dep ensure -vendor-only && go build -o /go/bin/bwm-d cmd/bwm-d/main.go
+RUN go get -u -v github.com/golang/dep/cmd/dep && dep ensure -v -vendor-only && go build -o /go/bin/bwm-d cmd/bwm-d/main.go
 
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:stretch
 
