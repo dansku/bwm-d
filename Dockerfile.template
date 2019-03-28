@@ -8,10 +8,7 @@ RUN go get -u -v github.com/golang/dep/cmd/dep && dep ensure -v -vendor-only && 
 
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:stretch
 
-RUN apt-get update && \
-    apt-get -y install python3-pip && \
-    pip3 install --upgrade speedtest-cli && \
-    rm -rf /var/lib/apt/lists/*
+RUN install_packages speedtest-cli
 
 COPY --from=build /go/bin/bwm-d .
 
